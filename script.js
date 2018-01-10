@@ -14,6 +14,7 @@ var student_array = [];
 var total = 0;
 var average = 0;
 /***********************
+ * EXAMPLE FOR AN CHICK FUNCTION
  * student_array - global array to hold student objects
  * @type {Array}
  * example of student_array after input:
@@ -30,8 +31,8 @@ var average = 0;
 * initializes the application, including adding click handlers and pulling in any data from the server, in later versions
 */
 function initializeApp(){
-    $("#add").click(addStudent);
-    $("#cancel").click( handleCancelClick)
+   addClickHandlersToElements();
+//
 }
 
 /***************************************************************************************************
@@ -41,6 +42,8 @@ function initializeApp(){
 *     
 */
 function addClickHandlersToElements(){
+    $(".btn-success").click(addStudent);
+    $(".btn-default").click(handleCancelClick);
 }
 
 /***************************************************************************************************
@@ -126,7 +129,7 @@ function updateStudentList(){
  */
 function calculateGradeAverage(array){
     for(var i = 0; i < array.length; i++){
-    total += parseInt(array[i].grade);
+    total += parseFloat(array[i].grade);
     }
     average = Math.round(total / array.length);
     total = 0;
