@@ -13,6 +13,8 @@ $(document).ready(initializeApp);
 var student_array = [];
 var total = 0;
 var average = 0;
+var counter= 0;
+
 /***********************
  * EXAMPLE FOR AN CHICK FUNCTION
  * student_array - global array to hold student objects
@@ -42,8 +44,15 @@ function initializeApp(){
 *     
 */
 function addClickHandlersToElements(){
-    $(".btn-success").click(addStudent);
+    $(".btn-success").click(handleAddClicked);
     $(".btn-default").click(handleCancelClick);
+    $("tbody").delegate(".btn-danger","click", function(){
+        updateArrayDel();
+        $(this).parentsUntil('tbody').remove();
+
+    });
+
+
 }
 
 /***************************************************************************************************
@@ -53,7 +62,7 @@ function addClickHandlersToElements(){
        none
  */
 function handleAddClicked() {
-
+    addStudent();
 }
 /***************************************************************************************************
  * handleCancelClicked - Event Handler when user clicks the cancel button, should clear out student form
@@ -76,7 +85,7 @@ function addStudent(){
    var studentName = $("#studentName").val();
    var studentCourse =  $("#studentCourse").val();
    var studentGrade = $("#studentGrade").val();
-   var studentObj = {name:studentName, course:studentCourse, grade:studentGrade};
+   var studentObj = {name:studentName, course:studentCourse, grade:studentGrade, id:counter};
    student_array.push(studentObj);
    updateStudentList();
    clearAddStudentFormInputs();
@@ -97,6 +106,7 @@ function clearAddStudentFormInputs(){
  * @param {object} studentObj a single student object with course, name, and grade inside
  */
 function renderStudentOnDom() {
+
     var newStudent = student_array[student_array.length - 1];
     var sName = $("<td>").append(newStudent.name);
     var sCourse = $("<td>").append(newStudent.course);
@@ -105,10 +115,13 @@ function renderStudentOnDom() {
     var deleteBtn = $("<button>", {
         type: "button",
         class: "btn btn-danger btn-xs",
-        text: "Delete"
+        text: "Delete",
+        id: counter
     });
     var trStudent = $("<tr>").append(sName, sCourse, sGrade, deleteBtn);
     $(".student-list").append(trStudent);
+    counter++;
+
 
 }
 /***************************************************************************************************
@@ -142,11 +155,20 @@ function calculateGradeAverage(array){
  * @returns {undefined} none
  */
 function renderGradeAverage(){
-    console.log("average :" +average);
     $(".avgGrade").text(average);
 }
 
-
+function updateArrayDel(){
+    var btnClick = parseInt($(event.target).attr('id'));
+    for(var i =0; i < counter; i++){
+        if(student_array[i].id === btnClick){
+            student_array.splice(i, 1);
+            calculateGradeAverage(student_array);
+            renderGradeAverage();
+            break;
+        }
+    }
+}
 
 
 
