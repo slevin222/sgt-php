@@ -14,7 +14,7 @@ var student_array = [];
 var total = 0;
 var average = 0;
 var counter= 0;
-
+var getDataFromServer;
 /***********************
  * EXAMPLE FOR AN CHICK FUNCTION
  * student_array - global array to hold student objects
@@ -46,6 +46,7 @@ function initializeApp(){
 function addClickHandlersToElements(){
     $(".btn-success").click(handleAddClicked);
     $(".btn-default").click(handleCancelClick);
+    $(".btn-primary").click(handleGetDataClick);
     $("tbody").delegate(".btn-danger","click", function(){
         updateArrayDel();
         $(this).parentsUntil('tbody').remove();
@@ -61,6 +62,7 @@ function addClickHandlersToElements(){
  * @return: 
        none
  */
+
 function handleAddClicked() {
     addStudent();
 }
@@ -82,6 +84,9 @@ function handleCancelClick(){
  * @calls clearAddStudentFormInputs, updateStudentList
  */
 function addStudent(){
+    if(student_array.length < 1){
+        $("td").hide();
+    }
    var studentName = $("#studentName").val();
    var studentCourse =  $("#studentCourse").val();
    var studentGrade = $("#studentGrade").val();
@@ -141,13 +146,14 @@ function updateStudentList(){
  * @returns {number}
  */
 function calculateGradeAverage(array){
-    for(var i = 0; i < array.length; i++){
-    total += parseFloat(array[i].grade);
-    }
-    average = Math.round(total / array.length);
-    total = 0;
-
-
+    // if(student_array.grade !== undefined) {
+    for (var i = 0; i < array.length; i++) {
+        total += parseFloat(array[i].grade);
+        // if ( total !== NaN){
+            average = Math.round(total / array.length);
+            total = 0;
+        }
+    // }
 }
 /***************************************************************************************************
  * renderGradeAverage - updates the on-page grade average
@@ -165,10 +171,33 @@ function updateArrayDel(){
             student_array.splice(i, 1);
             calculateGradeAverage(student_array);
             renderGradeAverage();
+            if(student_array.length < 1 ){
+                $(".avgGrade").text("0")
+                $("td").show();
+            }
             break;
         }
     }
 }
-
-
+var getDataFromServer;
+function handleGetDataClick(){
+    console.log(getDataFromServer);
+    var dataObject = {
+        dataType: "json",
+        api_key: "SNBklaXTqN"
+    };
+    $.ajax({
+        data: dataObject,
+        method: "post",
+        url: 'https://s-apis.learningfuze.com/sgt/get',
+        success: function(data){
+            getDataFromServer = data;
+            console.log('success');
+        },
+        error: function(){
+            console.log("error");
+        }
+    });
+    $.ajax(dataObject);
+}
 
