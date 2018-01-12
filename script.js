@@ -15,6 +15,7 @@ var total = 0;
 var average = 0;
 var counter= 0;
 var getDataFromServer;
+
 /***********************
  * EXAMPLE FOR AN CHICK FUNCTION
  * student_array - global array to hold student objects
@@ -25,13 +26,13 @@ var getDataFromServer;
  *  { name: 'Jill', course: 'Comp Sci', grade: 85 }
  * ];
  */
-
 /***************************************************************************************************
 * initializeApp 
 * @params {undefined} none
 * @returns: {undefined} none
 * initializes the application, including adding click handlers and pulling in any data from the server, in later versions
 */
+
 function initializeApp(){
    addClickHandlersToElements();
 //
@@ -43,6 +44,7 @@ function initializeApp(){
 * @returns  {undefined}
 *     
 */
+
 function addClickHandlersToElements(){
     $(".btn-success").click(handleAddClicked);
     $(".btn-default").click(handleCancelClick);
@@ -50,10 +52,7 @@ function addClickHandlersToElements(){
     $("tbody").delegate(".btn-danger","click", function(){
         updateArrayDel();
         $(this).parentsUntil('tbody').remove();
-
     });
-
-
 }
 
 /***************************************************************************************************
@@ -66,27 +65,28 @@ function addClickHandlersToElements(){
 function handleAddClicked() {
     addStudent();
 }
+
 /***************************************************************************************************
  * handleCancelClicked - Event Handler when user clicks the cancel button, should clear out student form
  * @param: {undefined} none
  * @returns: {undefined} none
  * @calls: clearAddStudentFormInputs
  */
+
 function handleCancelClick(){
     $("#studentName").val("");
     $("#studentCourse").val("");
     $("#studentGrade").val("");
 }
+
 /***************************************************************************************************
  * addStudent - creates a student objects based on input fields in the form and adds the object to global student array
  * @param {undefined} none
  * @return undefined
  * @calls clearAddStudentFormInputs, updateStudentList
  */
+
 function addStudent(){
-    if(student_array.length < 1){
-        $("td").hide();
-    }
    var studentName = $("#studentName").val();
    var studentCourse =  $("#studentCourse").val();
    var studentGrade = $("#studentGrade").val();
@@ -94,8 +94,8 @@ function addStudent(){
    student_array.push(studentObj);
    updateStudentList();
    clearAddStudentFormInputs();
-
 }
+
 /***************************************************************************************************
  * clearAddStudentForm - clears out the form values based on inputIds variable
  */
@@ -110,8 +110,8 @@ function clearAddStudentFormInputs(){
  * into the .student_list tbody
  * @param {object} studentObj a single student object with course, name, and grade inside
  */
-function renderStudentOnDom() {
 
+function renderStudentOnDom() {
     var newStudent = student_array[student_array.length - 1];
     var sName = $("<td>").append(newStudent.name);
     var sCourse = $("<td>").append(newStudent.course);
@@ -126,9 +126,8 @@ function renderStudentOnDom() {
     var trStudent = $("<tr>").append(sName, sCourse, sGrade, deleteBtn);
     $(".student-list").append(trStudent);
     counter++;
-
-
 }
+
 /***************************************************************************************************
  * updateStudentList - centralized function to update the average and call student list update
  * @param students {array} the array of student objects
@@ -145,42 +144,41 @@ function updateStudentList(){
  * @param: {array} students  the array of student objects
  * @returns {number}
  */
-function calculateGradeAverage(array){
+function calculateGradeAverage(array) {
     // if(student_array.grade !== undefined) {
+    total =0;
     for (var i = 0; i < array.length; i++) {
         total += parseFloat(array[i].grade);
-        // if ( total !== NaN){
-            average = Math.round(total / array.length);
-            total = 0;
-        }
-    // }
+        average = Math.round(total / array.length);
+    }
 }
-/***************************************************************************************************
- * renderGradeAverage - updates the on-page grade average
- * @param: {number} average    the grade average
- * @returns {undefined} none
- */
-function renderGradeAverage(){
+    /***************************************************************************************************
+     * renderGradeAverage - updates the on-page grade average
+     * @param: {number} average    the grade average
+     * @returns {undefined} none
+     */
+function renderGradeAverage() {
     $(".avgGrade").text(average);
 }
 
-function updateArrayDel(){
+function updateArrayDel() {
     var btnClick = parseInt($(event.target).attr('id'));
-    for(var i =0; i < counter; i++){
-        if(student_array[i].id === btnClick){
+    for (var i = 0; i < counter; i++) {
+        if (student_array[i].id === btnClick) {
             student_array.splice(i, 1);
             calculateGradeAverage(student_array);
             renderGradeAverage();
-            if(student_array.length < 1 ){
-                $(".avgGrade").text("0")
-                $("td").show();
-            }
+            // if (student_array.length < 1) {
+            //     $(".avgGrade").text("0");
+            //     $("td").show();
+            // }
             break;
         }
     }
 }
-var getDataFromServer;
-function handleGetDataClick(){
+
+function handleGetDataClick() {
+    $("td").hide();
     console.log(getDataFromServer);
     var dataObject = {
         dataType: "json",
@@ -190,14 +188,33 @@ function handleGetDataClick(){
         data: dataObject,
         method: "post",
         url: 'https://s-apis.learningfuze.com/sgt/get',
-        success: function(data){
+        success: function (data) {
             getDataFromServer = data;
+            getDataFromServer = JSON.parse(getDataFromServer);
             console.log('success');
+            for(var getDataFromServerIndex = 0; getDataFromServerIndex < getDataFromServer.data.length; getDataFromServerIndex++ ){
+                (function () {
+                    var sName = $("<td>").append(getDataFromServer.data[getDataFromServerIndex].name);
+                    var sCourse = $("<td>").append(getDataFromServer.data[getDataFromServerIndex].course);
+                    var sGrade = $("<td>").append(getDataFromServer.data[getDataFromServerIndex].grade);
+                    var deleteBtn = $("<button>", {
+                        type: "button",
+                        class: "btn btn-danger btn-xs",
+                        text: "Delete",
+                        on: {
+                            click: function(){
+
+                            }
+                        }
+                    });
+                    var trStudent = $("<tr>").append(sName, sCourse, sGrade, deleteBtn);
+                    $(".student-list").append(trStudent);
+                })();
+            }
         },
-        error: function(){
+        error: function () {
             console.log("error");
         }
     });
     $.ajax(dataObject);
 }
-
