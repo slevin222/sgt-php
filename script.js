@@ -97,8 +97,7 @@ function addStudent(){
         method: "post",
         url: 'https://s-apis.learningfuze.com/sgt/create',
         success: function (response) {
-               console.log(response);
-               console.log(response.new_id);
+
                newStudentId = response.new_id;
                getDataFromServer.data[getDataFromServer.data.length-1].id = newStudentId;
                updateStudentList();
