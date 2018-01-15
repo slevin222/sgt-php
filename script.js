@@ -1,9 +1,8 @@
 $(document).ready(initializeApp);
 
-var student_array = [];
+// var student_array = [];
 var total = 0;
 var average = 0;
-var counter= 1000;
 var getDataFromServer;
 var newStudentId;
 
@@ -27,6 +26,7 @@ var newStudentId;
 function initializeApp(){
    addClickHandlersToElements();
    loadStudentData();
+    $('#dataModal').modal('hide');
 //
 }
 
@@ -100,6 +100,7 @@ function addStudent(){
                console.log(response);
                console.log(response.new_id);
                newStudentId = response.new_id;
+               getDataFromServer.data[getDataFromServer.data.length-1].id = newStudentId;
                updateStudentList();
         },
         error: function () {
@@ -129,17 +130,15 @@ function renderStudentOnDom() {
     var sName = $("<td>").append(newStudent.name);
     var sCourse = $("<td>").append(newStudent.course);
     var sGrade = $("<td>").append(newStudent.grade);
-    var tempId = counter;
     var trStudent = $("<tr>").append(sName, sCourse, sGrade);
     var deleteBtn = $("<button>", {
         type: "button",
         class: "btn btn-danger btn-xs",
         text: "Delete",
-        id: tempId
+        id: newStudentId
     });
     trStudent = $("<tr>").append(sName, sCourse, sGrade, deleteBtn);
     $(".student-list").append(trStudent);
-    counter++;
 }
 
 /***************************************************************************************************
@@ -204,13 +203,11 @@ function updateArrayDel() {
         }
     });
     $.ajax(dataObject);
-
     calculateGradeAverage(getDataFromServer);
     renderGradeAverage();
 }
 
 function loadStudentData() {
-    console.log(getDataFromServer);
     var dataObject = {
         dataType: "json",
         api_key: "SNBklaXTqN"
@@ -222,7 +219,8 @@ function loadStudentData() {
         url: 'https://s-apis.learningfuze.com/sgt/get',
         success: function (data) {
             getDataFromServer = data;
-            console.log('success');
+            $(".responseText").text("current student data has been loaded successfully");
+            $('#dataModal').modal('show');
             for(var getDataFromServerIndex = 0; getDataFromServerIndex < getDataFromServer.data.length; getDataFromServerIndex++ ){
                 (function () {
                     var sName = $("<td>").append(getDataFromServer.data[getDataFromServerIndex].name);
@@ -246,7 +244,9 @@ function loadStudentData() {
             calculateGradeAverage(getDataFromServer);
         },
         error: function () {
-            console.log("error");
+            $(".responseText").text("Error- Unable to access current student information");
+            $('#dataModal').modal('show');
+
         }
     });
     $.ajax(dataObject);
