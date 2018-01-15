@@ -81,7 +81,7 @@ function addStudent(){
     var studentName = $("#studentName").val();
     var studentCourse =  $("#studentCourse").val();
     var studentGrade = $("#studentGrade").val();
-    var studentObj = {name:studentName, course:studentCourse, grade:studentGrade, id:counter};
+    var studentObj = {name:studentName, course:studentCourse, grade:studentGrade};
     getDataFromServer.data.push(studentObj);
     clearAddStudentFormInputs();
 
