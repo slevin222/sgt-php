@@ -9,8 +9,9 @@
     <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script>
-    <script src="firebase.js"></script>
-    <script src="script.js"></script>
+    <!-- <script src="firebase.js"></script> -->
+    <script src="sgt.js"></script>
+    <script type="text/javascript" src="script2.js"></script>
     <title>Firebase</title>
 </head>
 
@@ -61,8 +62,8 @@
                         <input type="text" class="form-control" name="studentGrade" id="studentGrade" placeholder="Student Grade">
                     </div>
                 </form>
-                <button type="button" class="btn btn-success">Add</button>
-                <button type="button" class="btn btn-default">Cancel</button>
+                <button type="button" class="btn btn-success" id="addButton">Add</button>
+                <button type="button" class="btn btn-primary" id="cancelButton">Cancel</button>
             </div>
             <div class="student-list-container col-lg-8 col-xs-12">
                 <table class="student-list table table-hover">
@@ -74,7 +75,7 @@
                             <th>Operations</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="studentDisplay">
                     </tbody>
                 </table>
             </div>
