@@ -1,10 +1,14 @@
 <?php
 
+// $debugMode = false
 $LOCAL_ACCESS = true;
 
 // function debug($message){
-//     if(!($empty($_GET)))
+//     if($debugMode){
+//         print($message);
+//     }
 // };
+// degub mode instead of using a bunch of print statements
 
 
 require_once('mysql_connect.php');

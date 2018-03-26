@@ -110,6 +110,8 @@ function addStudent() {
         }
     });
     $.ajax(dataObject);
+    calculateGradeAverage(getDataFromServer);
+
 }
 
 /***************************************************************************************************
