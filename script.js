@@ -96,7 +96,7 @@ function addStudent() {
         data: dataObject,
         dataType: "json",
         method: "post",
-        url: 'https://s-apis.learningfuze.com/sgt/create',
+        url: '../php/create.php',
         success: function (response) {
 
             newStudentId = response.new_id;
@@ -217,7 +217,7 @@ function loadStudentData() {
         data: dataObject,
         dataType: "json",
         method: "post",
-        url: './read.php',
+        url: '../php/read.php',
         success: function (data) {
             getDataFromServer = data;
             $(".responseText").text("current student data has been loaded successfully");

@@ -5,10 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/cosmo/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/sandstone/bootstrap.min.css" rel="stylesheet" type="text/css"
+    />
     <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script>
+    <!-- <script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script> -->
     <!-- <script src="firebase.js"></script> -->
     <!-- <script src="sgt.js"></script>
     <script type="text/javascript" src="script2.js"></script> -->
@@ -17,18 +18,22 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container" id="welcome">
+
+    </div>
+    <div class="container" id="sgt">
         <div class="row">
             <div class="col-xs-12">
-                <h1 class="hidden-sm hidden-xs">Student Grade Table
+                <h1 class="hidden-sm hidden-xs">
+                    <strong>Student Grade Table</strong>
                     <small class="pull-right">Grade Average :
-                        <span class="avgGrade label label-default">0</span>
+                        <span class="avgGrade label label-info">0</span>
                     </small>
                     <hr>
                 </h1>
                 <h3 class="visible-sm col-sm-12 visible-xs col-xs-12">Student Grade Table
                     <small class="pull-right">Grade Average :
-                        <span class="avgGrade label label-default"></span>
+                        <span class="avgGrade label label-info">0</span>
                     </small>
                     <hr>
                 </h3>
@@ -42,7 +47,7 @@
                 <form class="form-group">
                     <div class="input-group">
                         <span class="input-group-addon">
-                            <i class="glyphicon glyphicon-user"></i>
+                            <i class="glyphicon glyphicon-user" style="color: darkblue"></i>
                         </span>
                         <input type="text" class="form-control" name="studentName" id="studentName" placeholder="Student Name">
                     </div>
@@ -50,7 +55,7 @@
                 <form class="form-group">
                     <div class="input-group">
                         <span class="input-group-addon">
-                            <i class="glyphicon glyphicon-calendar"></i>
+                            <i class="glyphicon glyphicon-calendar" style="color: darkblue"></i>
                         </span>
                         <input type="text" class="form-control" name="studentCourse" id="studentCourse" placeholder="Student Course">
                     </div>
@@ -58,22 +63,64 @@
                 <form class="form-group">
                     <div class="input-group">
                         <span class="input-group-addon">
-                            <i class="glyphicon glyphicon-education"></i>
+                            <i class="glyphicon glyphicon-education" style="color: darkblue"></i>
                         </span>
                         <input type="text" class="form-control" name="studentGrade" id="studentGrade" placeholder="Student Grade">
                     </div>
                 </form>
-                <button type="button" class="btn btn-success col-sm-6" id="addButton">Add</button>
-                <button type="button" class="btn btn-primary col-sm-6" id="cancelButton">Cancel</button>
+                <div class="row">
+                    <div class="col-xs-6 offset-xs-1">
+                        <button type="button" class="btn btn-success col-xs-12" id="addButton">Add</button>
+                    </div>
+                    <div class="col-xs-6 offset-xs-1">
+                        <button type="button" class="btn btn-primary col-xs-12" id="cancelButton">Cancel</button>
+                    </div>
+                </div>
             </div>
             <div class="student-list-container col-lg-8 col-xs-12">
                 <table class="student-list table table-hover">
                     <thead>
                         <tr>
-                            <th>Student Name</th>
-                            <th>Student Course</th>
-                            <th>Student Grade</th>
-                            <th>Operations</th>
+                            <th>
+                                <div class="dropup">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        Name
+                                        <span class="caret"></span>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                        <button class="dropdown-item studentAZ btn btn-info " type="button">Sort A - Z</button>
+                                        <button class="dropdown-item studentZA btn btn-info " type="button">Sort Z - A</button>
+                                    </div>
+                                </div>
+
+                            </th>
+                            <th>
+                                <div class="dropup">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        Course
+                                        <span class="caret"></span>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                        <button class="dropdown-item courseAZ btn btn-info" type="button">Sort A - Z</button>
+                                        <button class="dropdown-item courseZA btn btn-info" type="button">Sort Z - A</button>
+                                    </div>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="dropup">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                        Grade
+                                        <span class="caret"></span>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                        <button class="dropdown-item gradeAZ btn btn-info" type="button">Sort 0 - 100</button>
+                                        <button class="dropdown-item gradeZA btn btn-info" type="button">Sort 100 - 0</button>
+                                    </div>
+                                </div>
+                            </th>
                         </tr>
                     </thead>
                     <tbody id="studentDisplay">
@@ -85,6 +132,21 @@
     <div id="messageDisplay" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
+                <div class="modal-header alert alert-danger">
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="responseText"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="deleteStudentModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
@@ -92,7 +154,7 @@
                     <p class="responseText"></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-default" id="deleteConfirmBtn" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
