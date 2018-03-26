@@ -38,8 +38,8 @@ function initializeApp() {
 */
 
 function addClickHandlersToElements() {
-    $(".btn-success").click(handleAddClicked);
-    $(".btn-default").click(handleCancelClick);
+    $("#addButton").click(handleAddClicked);
+    $("#cancelButton").click(handleCancelClick);
     $("tbody").delegate(".btn-danger", "click", function () {
         updateArrayDel(getDataFromServer.data);
         $(this).parentsUntil('tbody').remove();
@@ -78,16 +78,17 @@ function handleCancelClick() {
  */
 
 function addStudent() {
+    console.log("local data in add", getDataFromServer)
     var studentName = $("#studentName").val();
     var studentCourse = $("#studentCourse").val();
     var studentGrade = $("#studentGrade").val();
     var studentObj = { name: studentName, course: studentCourse, grade: studentGrade };
+    console.log('student object', studentObj)
     getDataFromServer.data.push(studentObj);
     clearAddStudentFormInputs();
 
     var dataObject = {
         dataType: "json",
-        api_key: "SNBklaXTqN",
         name: studentName,
         course: studentCourse,
         grade: studentGrade,
@@ -97,15 +98,15 @@ function addStudent() {
         data: dataObject,
         dataType: "json",
         method: "post",
-        url: '../php/access.php',
+        url: 'php/actions/datapoint.php',
         success: function (response) {
-            console.log(response);
-            newStudentId = response.new_id;
+            console.log("server response from add student", response);
+            newStudentId = (response.id + '');
             getDataFromServer.data[getDataFromServer.data.length - 1].id = newStudentId;
             updateStudentList();
         },
         error: function () {
-            console.log("error");
+            console.log("error from addStudent");
         }
     });
     $.ajax(dataObject);
@@ -176,8 +177,8 @@ function renderGradeAverage() {
 }
 
 function updateArrayDel() {
-    var btnClick = parseInt($(event.target).attr('id'));
-    console.log(btnClick);
+    var btnClick = $(event.target).attr('id');
+    console.log(btnClick + '');
     for (var i = 0; i < getDataFromServer.data.length; i++) {
         if (getDataFromServer.data[i].id === btnClick) {
             var idToDelete = getDataFromServer.data[i].id;
@@ -188,7 +189,6 @@ function updateArrayDel() {
     }
     var dataObject = {
         dataType: "json",
-        api_key: "SNBklaXTqN",
         student_id: idToDelete,
         action: 'delete'
     };
@@ -196,13 +196,13 @@ function updateArrayDel() {
         data: dataObject,
         dataType: "json",
         method: "post",
-        url: '../php/delete',
+        url: 'php/actions/datapoint.php',
         success: function (response) {
 
             console.log(response);
         },
         error: function () {
-            console.log("error");
+            console.log("delete response error");
         }
     });
     $.ajax(dataObject);
@@ -213,16 +213,15 @@ function updateArrayDel() {
 function loadStudentData() {
     var dataObject = {
         dataType: "json",
-        api_key: "SNBklaXTqN",
         action: 'read'
     };
     $.ajax({
         data: dataObject,
         dataType: "json",
-        method: "post",
-        url: '../php/access.php',
+        method: "get",
+        url: 'php/actions/datapoint.php',
         success: function (data) {
-            console.log(data);
+
             getDataFromServer = data;
             $(".responseText").text("current student data has been loaded successfully");
             $('#dataModal').modal('show');
@@ -249,6 +248,7 @@ function loadStudentData() {
             calculateGradeAverage(getDataFromServer);
         },
         error: function () {
+            console.log('errors in ajax');
             $(".responseText").text("Error- Unable to access current student information");
             $('#dataModal').modal('show');
 

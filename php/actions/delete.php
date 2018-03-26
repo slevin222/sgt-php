@@ -1,7 +1,9 @@
 <?php
-if(empty($localAccess)) {
-    die('Direct access is not allowed');
+
+if(empty($LOCAL_ACCESS)){
+    die('direct access not allowed');
 }
+
 ini_set('display_errors', 'On');
 error_reporting(E_ALL);
 $studentId = filter_var($_POST['student_id'], FILTER_SANITIZE_NUMBER_INT);

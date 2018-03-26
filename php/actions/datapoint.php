@@ -2,15 +2,18 @@
 
 $LOCAL_ACCESS = true;
 
-function debug($message){
-    if(!($empty($_GET)))
-}
+// function debug($message){
+//     if(!($empty($_GET)))
+// };
 
 
 require_once('mysql_connect.php');
 
-if(empty($_GET['action'])){
-    $_GET['action']= 'read';
+if(isset($_GET['action'])){
+    $newAction = $_GET['action'];
+}
+if(isset($_POST['action'])){
+    $newAction = $_POST['action'];
 }
 
 $output = [
@@ -20,21 +23,21 @@ $output = [
 ];
 
 
-switch($_GET['action']{
+switch($newAction){
     case 'read':
-        include('actions/read.php');
+        include('read.php');
         break;
     case 'create':
-        include('actions/create.php');
+        include('create.php');
         break;
     case 'update':
-        include('actions/update.php');
+        include('update.php');
         break;
     case 'delete':
-        include('actions/delete.php');
+        include('delete.php');
         break;
-});
-print_r($output);
+};
+
 $json_output= json_encode($output);
 print($json_output);
 

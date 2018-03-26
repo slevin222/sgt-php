@@ -6,7 +6,7 @@ if(empty($LOCAL_ACCESS)){
 $name = $_POST['name'];
 $grade = $_POST['grade'];
 $course = $_POST['course'];
-print_r($_POST);
+// print_r($_POST);
 $output =[
     'success' => false,
     'error' => [],
