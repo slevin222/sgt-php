@@ -90,13 +90,14 @@ function addStudent() {
         api_key: "SNBklaXTqN",
         name: studentName,
         course: studentCourse,
-        grade: studentGrade
+        grade: studentGrade,
+        action: 'create'
     };
     $.ajax({
         data: dataObject,
         dataType: "json",
         method: "post",
-        url: '../php/create.php',
+        url: '../php/access.php',
         success: function (response) {
 
             newStudentId = response.new_id;
@@ -211,13 +212,14 @@ function updateArrayDel() {
 function loadStudentData() {
     var dataObject = {
         dataType: "json",
-        api_key: "SNBklaXTqN"
+        api_key: "SNBklaXTqN",
+        action: 'read'
     };
     $.ajax({
         data: dataObject,
         dataType: "json",
         method: "post",
-        url: '../php/read.php',
+        url: '../php/access.php',
         success: function (data) {
             getDataFromServer = data;
             $(".responseText").text("current student data has been loaded successfully");

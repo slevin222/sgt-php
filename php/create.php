@@ -1,5 +1,7 @@
 <?php
-reqiure_once('mysql_connect.php');
+if(empty($LOCAL_ACCESS)){
+    die('direct access not allowed');
+}
 
 $name = $_POST['name'];
 $grade = $_POST['grade'];
@@ -27,16 +29,6 @@ if(!empty($result)){
 }else{
     $output['errors'][] = 'invalid query';
 }
-
-$json_output = json_encode($output);
-print($json_output);
-
-
-
-
-
-
-
 
 
 

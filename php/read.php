@@ -1,5 +1,7 @@
 <?php
-reqiure_once('mysql_connect.php');
+if(empty($LOCAL_ACCESS)){
+    die('direct access not allowed');
+}
 $query = "SELECT * FROM `students`";
 
 $result = mysqli_query($conn, $query);
@@ -24,10 +26,5 @@ if(!empty($result)){
 $output['errors'][]=mysql_error($conn);
      
 }
-
-
-$json_output = json_encode($output);
-
-print($json_output)
 
 ?>
