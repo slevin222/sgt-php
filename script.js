@@ -189,13 +189,14 @@ function updateArrayDel() {
     var dataObject = {
         dataType: "json",
         api_key: "SNBklaXTqN",
-        student_id: idToDelete
+        student_id: idToDelete,
+        action: 'delete'
     };
     $.ajax({
         data: dataObject,
         dataType: "json",
         method: "post",
-        url: 'https://s-apis.learningfuze.com/sgt/delete',
+        url: '../php/delete',
         success: function (response) {
 
             console.log(response);

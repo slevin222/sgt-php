@@ -13,12 +13,16 @@ if(empty($_POST['action'])){
 }
 
 reqiure_once('mysql_connect.php');
+
 switch($_POST['action']){
     case 'read':
         include('read.php');
         break;
     case 'create':
         include('create.php');
+        break;
+    case 'delete':
+        include('delete.php');
         break;
     default:
         $output['errors'][]= 'invalid action';
