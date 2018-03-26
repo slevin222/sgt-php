@@ -99,7 +99,7 @@ function addStudent() {
         method: "post",
         url: '../php/access.php',
         success: function (response) {
-
+            console.log(response);
             newStudentId = response.new_id;
             getDataFromServer.data[getDataFromServer.data.length - 1].id = newStudentId;
             updateStudentList();
@@ -222,6 +222,7 @@ function loadStudentData() {
         method: "post",
         url: '../php/access.php',
         success: function (data) {
+            console.log(data);
             getDataFromServer = data;
             $(".responseText").text("current student data has been loaded successfully");
             $('#dataModal').modal('show');
