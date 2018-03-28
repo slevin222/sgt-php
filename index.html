@@ -7,12 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/sandstone/bootstrap.min.css" rel="stylesheet" type="text/css"
     />
+    <link type="text/css" rel="stylesheet" href="style.css">
     <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <!-- <script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script> -->
-    <!-- <script src="firebase.js"></script> -->
-    <!-- <script src="sgt.js"></script>
-    <script type="text/javascript" src="script2.js"></script> -->
     <script type="text/javascript" src="script.js"></script>
     <title>SGT PHP</title>
 </head>
@@ -82,41 +79,48 @@
                         <tr>
                             <th>
                                 <div class="dropup">
-                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false">
-                                        Name
+                                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Name
                                         <span class="caret"></span>
                                     </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                        <button class="dropdown-item studentAZ btn btn-info " type="button" id="nameAZ">Sort A - Z</button>
-                                        <button class="dropdown-item studentZA btn btn-info " type="button" id="nameZA">Sort Z - A</button>
-                                    </div>
+                                    <ul class="dropdown-menu">
+                                        <li id="nameAZ">
+                                            A - Z
+                                        </li>
+                                        <li id="nameZA">
+                                            Z - A
+                                        </li>
+                                    </ul>
                                 </div>
                             </th>
                             <th>
                                 <div class="dropup">
-                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false">
-                                        Course
+                                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Course
                                         <span class="caret"></span>
                                     </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                        <button class="dropdown-item courseAZ btn btn-info" type="button" id="courseAZ">Sort A - Z</button>
-                                        <button class="dropdown-item courseZA btn btn-info" type="button" id="courseZA">Sort Z - A</button>
-                                    </div>
+                                    <ul class="dropdown-menu">
+                                        <li id="courseAZ">
+                                            A - Z
+                                        </li>
+                                        <li id="courseZA">
+                                            Z - A
+                                        </li>
+                                    </ul>
                                 </div>
                             </th>
                             <th>
                                 <div class="dropup">
-                                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
                                         Grade
                                         <span class="caret"></span>
                                     </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                        <button class="dropdown-item gradeAZ btn btn-info" type="button" id="gradeLow">Sort 0 - 100</button>
-                                        <button class="dropdown-item gradeZA btn btn-info" type="button" id="gradeHigh">Sort 100 - 0</button>
-                                    </div>
+                                    <ul class="dropdown-menu">
+                                        <li id="gradeLow">
+                                            0 - 100
+                                        </li>
+                                        <li id="gradeHigh">
+                                            100 - 0
+                                        </li>
+                                    </ul>
                                 </div>
                             </th>
                         </tr>
@@ -134,7 +138,8 @@
                     <button type="button" class="close" data-dismiss="modal"></button>
                 </div>
                 <div class="modal-body text-center">
-                    <p class="responseText"></p>
+                    <h4 class="responseText"></h4>
+                    <p class="dateTime"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" data-dismiss="modal">Continue</button>

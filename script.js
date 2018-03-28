@@ -16,90 +16,93 @@ function initializeApp() {
 function addClickHandlersToElements() {
     $("#addButton").click(handleAddClicked);
     $("#cancelButton").click(handleCancelClick);
-    $("#nameAZ").click(sortNamesAZ);
-    $("#nameZA").click(sortNamesZA);
-    $("#courseAZ").click(sortCourseAZ);
-    $("#courseZA").click(sortCourseZA);
-    $("#gradeLow").click(sortGradeLow);
-    $("#gradeHigh").click(sortGradeHigh);
+    $("#nameAZ").click(sortNameOrCourse);
+    $("#nameZA").click(sortNameOrCourse);
+    $("#courseAZ").click(sortNameOrCourse);
+    $("#courseZA").click(sortNameOrCourse);
+    $("#gradeLow").click(sortGrades);
+    $("#gradeHigh").click(sortGrades);
     $("tbody").delegate(".btn-danger", "click", function () {
         updateArrayDel(getDataFromServer.data);
         $(this).parentsUntil('tbody').remove();
     });
 }
 
-function sortNamesAZ() {
+function sortNameOrCourse() {
+    var sortMode = $(this).attr('id');
     var studentArray = getDataFromServer.data;
-    studentArray.sort(function (a, b) {
-        if (a.name < b.name) return -1;
-        if (a.name > b.name) return 1;
-        return 0;
-    });
-    renderStudentsOnSort(studentArray)
+    switch (sortMode) {
+        case "nameAZ":
+            studentArray.sort(function (a, b) {
+                if (a.name < b.name) return -1;
+                if (a.name > b.name) return 1;
+                return 0;
+            });
+            renderStudentsOnSort(studentArray);
+            break;
+        case "nameZA":
+            studentArray.sort(function (a, b) {
+                if (a.name > b.name) return -1;
+                if (a.name < b.name) return 1;
+                return 0;
+            });
+            renderStudentsOnSort(studentArray);
+            break;
+        case "courseAZ":
+            studentArray.sort(function (a, b) {
+                if (a.course < b.course) return -1;
+                if (a.course > b.course) return 1;
+                return 0;
+            });
+            renderStudentsOnSort(studentArray);
+            break;
+        case "courseZA":
+            var studentArray = getDataFromServer.data;
+            studentArray.sort(function (a, b) {
+                if (a.course > b.course) return -1;
+                if (a.course < b.course) return 1;
+                return 0;
+            });
+            renderStudentsOnSort(studentArray);
+            break;
+    }
 }
 
-function sortNamesZA() {
+
+function sortGrades() {
+    var sortMode = $(this).attr('id');
     var studentArray = getDataFromServer.data;
-    studentArray.sort(function (a, b) {
-        if (a.name > b.name) return -1;
-        if (a.name < b.name) return 1;
-        return 0;
-    });
-    renderStudentsOnSort(studentArray)
+    switch (sortMode) {
+        case "gradeLow":
+            studentArray.sort(function (a, b) {
+                if (parseInt(a.grade) < parseInt(b.grade)) return -1;
+                if (parseInt(a.grade) > parseInt(b.grade)) return 1;
+                return 0;
+            });
+            renderStudentsOnSort(studentArray);
+            break;
+        case "gradeHigh":
+            var studentArray = getDataFromServer.data;
+            studentArray.sort(function (a, b) {
+                if (parseInt(a.grade) > parseInt(b.grade)) return -1;
+                if (parseInt(a.grade) < parseInt(b.grade)) return 1;
+                return 0;
+            });
+            renderStudentsOnSort(studentArray);
+            break;
+    }
 }
 
-function sortCourseAZ() {
-    var studentArray = getDataFromServer.data;
-    studentArray.sort(function (a, b) {
-        if (a.course < b.course) return -1;
-        if (a.course > b.course) return 1;
-        return 0;
-    });
-    renderStudentsOnSort(studentArray)
-}
-
-function sortCourseZA() {
-    var studentArray = getDataFromServer.data;
-    studentArray.sort(function (a, b) {
-        if (a.course > b.course) return -1;
-        if (a.course < b.course) return 1;
-        return 0;
-    });
-    renderStudentsOnSort(studentArray)
-}
-
-function sortGradeLow() {
-    var studentArray = getDataFromServer.data;
-    studentArray.sort(function (a, b) {
-
-        if (parseInt(a.grade) < parseInt(b.grade)) return -1;
-        if (parseInt(a.grade) > parseInt(b.grade)) return 1;
-        return 0;
-    });
-    renderStudentsOnSort(studentArray)
-
-}
-
-function sortGradeHigh() {
-    var studentArray = getDataFromServer.data;
-    studentArray.sort(function (a, b) {
-        if (parseInt(a.grade) > parseInt(b.grade)) return -1;
-        if (parseInt(a.grade) < parseInt(b.grade)) return 1;
-        return 0;
-    });
-    renderStudentsOnSort(studentArray)
-}
 
 function renderStudentsOnSort(studentArray) {
     $('#studentDisplay').empty();
-
     for (var studentArrayIndex = 0; studentArrayIndex < studentArray.length; studentArrayIndex++) {
         (function () {
             var sName = $("<td>").append(studentArray[studentArrayIndex].name);
             var sCourse = $("<td>").append(studentArray[studentArrayIndex].course);
             var sGrade = $("<td>").append(studentArray[studentArrayIndex].grade);
             var id = studentArray[studentArrayIndex].id;
-            var deleteBtn = $("<button>", {
+            var toDelete = $("<button>", {
                 type: "button",
                 class: "btn btn-danger btn-xs",
                 id: id,
@@ -109,12 +112,14 @@ function renderStudentsOnSort(studentArray) {
                     }
                 }
             });
+            var deleteBtn = $("<td>").append(toDelete)
             var trStudent = $("<tr>").append(sName, sCourse, sGrade, deleteBtn);
             $(".student-list").append(trStudent);
 
         })();
     }
 }
+
 function handleAddClicked() {
     addStudent();
 }
@@ -123,6 +128,16 @@ function handleCancelClick() {
     $("#studentName").val("");
     $("#studentCourse").val("");
     $("#studentGrade").val("");
+}
+
+function showLoadModal() {
+    var today = new Date();
+    var date = (today.getMonth() + 1) + '-' + today.getDate() + '-' + today.getFullYear();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = 'Date : ' + date + ' Time : ' + time;
+    $(".responseText").text("Current student information has been loaded from DataBase");
+    $(".dateTime").text(dateTime);
+    $('#messageDisplay').modal('show');
 }
 
 function loadStudentData() {
@@ -137,15 +152,14 @@ function loadStudentData() {
         url: 'php/actions/datapoint.php',
         success: function (data) {
             getDataFromServer = data;
-            $(".responseText").text("Current student information has been loaded from DataBabe");
-            $('#messageDisplay').modal('show');
+            showLoadModal();
             for (var getDataFromServerIndex = 0; getDataFromServerIndex < getDataFromServer.data.length; getDataFromServerIndex++) {
                 (function () {
                     var sName = $("<td>").append(getDataFromServer.data[getDataFromServerIndex].name);
                     var sCourse = $("<td>").append(getDataFromServer.data[getDataFromServerIndex].course);
                     var sGrade = $("<td>").append(getDataFromServer.data[getDataFromServerIndex].grade);
                     var id = getDataFromServer.data[getDataFromServerIndex].id;
-                    var deleteBtn = $("<button>", {
+                    var toDelete = $("<button>", {
                         type: "button",
                         class: "btn btn-danger btn-xs",
                         id: id,
@@ -155,6 +169,7 @@ function loadStudentData() {
                             }
                         }
                     });
+                    var deleteBtn = $("<td>").append(toDelete)
                     var trStudent = $("<tr>").append(sName, sCourse, sGrade, deleteBtn);
                     $(".student-list").append(trStudent);
                 })();
@@ -253,21 +268,23 @@ function renderStudentOnDom() {
     var sName = $("<td>").append(newStudent.name);
     var sCourse = $("<td>").append(newStudent.course);
     var sGrade = $("<td>").append(newStudent.grade);
-    var trStudent = $("<tr>").append(sName, sCourse, sGrade);
-    var deleteBtn = $("<button>", {
+    var toDelete = $("<button>", {
         type: "button",
         class: "btn btn-danger btn-xs",
+        id: id,
         text: "Delete",
-        id: newStudentId
+        on: {
+            click: function () {
+            }
+        }
     });
-    trStudent = $("<tr>").append(sName, sCourse, sGrade, deleteBtn);
+    var deleteBtn = $("<td>").append(toDelete)
+    var trStudent = $("<tr>").append(sName, sCourse, sGrade, deleteBtn);
     $(".student-list").append(trStudent);
 }
 
 function updateStudentList() {
     renderStudentOnDom();
-    // calculateGradeAverage(student_array);
-    // renderGradeAverage();
 }
 
 function calculateGradeAverage(array) {

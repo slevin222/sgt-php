@@ -1,0 +1,21 @@
+input{
+    cursor: pointer;
+}
+
+li{
+    cursor: pointer;
+    text-align: center;
+
+}
+
+li:hover { 
+    background-color: lightgray;
+}
+
+ul.dropdown-menu{
+    min-width: 75px;
+}
+
+.modal-footer{
+    text-align: center;
+}
