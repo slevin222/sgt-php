@@ -4,6 +4,7 @@ var total = 0;
 var average = 0;
 var getDataFromServer;
 var newStudentId;
+var studentToDelete;
 
 function initializeApp() {
     addClickHandlersToElements();
@@ -22,15 +23,31 @@ function addClickHandlersToElements() {
     $("#courseZA").click(sortNameOrCourse);
     $("#gradeLow").click(sortGrades);
     $("#gradeHigh").click(sortGrades);
-    $("tbody").delegate(".btn-danger", "click", function () {
-        updateArrayDel(getDataFromServer.data);
-        $(this).parentsUntil('tbody').remove();
-    });
+    // $("tbody").delegate(".btn-danger", "click", showDeleteModal);
 }
 
+function showDeleteModal() {
+    studentToDelete = $(this).parentsUntil('tbody').bind(this);
+    var info = $(this).parentsUntil('tbody').text();
+    console.log('info in show modal', info)
+    $(".deleteText").text(info);
+    $('#deleteStudentModal').modal('show');
+
+
+    return studentToDelete;
+}
+
+function deleteStudent(studentToDelete) {
+    console.log('called deleteStudent', studentToDelete)
+    updateArrayDel(getDataFromServer.data);
+    $(studentToDelete).remove();
+}
+
+
 function sortNameOrCourse() {
-    var sortMode = $(this).attr('id');
     var studentArray = getDataFromServer.data;
+    var sortMode = $(this).attr('id');
+
     switch (sortMode) {
         case "nameAZ":
             studentArray.sort(function (a, b) {
@@ -155,23 +172,36 @@ function loadStudentData() {
             showLoadModal();
             for (var getDataFromServerIndex = 0; getDataFromServerIndex < getDataFromServer.data.length; getDataFromServerIndex++) {
                 (function () {
-                    var sName = $("<td>").append(getDataFromServer.data[getDataFromServerIndex].name);
-                    var sCourse = $("<td>").append(getDataFromServer.data[getDataFromServerIndex].course);
-                    var sGrade = $("<td>").append(getDataFromServer.data[getDataFromServerIndex].grade);
-                    var id = getDataFromServer.data[getDataFromServerIndex].id;
+                    var student = getDataFromServer.data[getDataFromServerIndex];
+                    var sName = $("<td>").text(student.name);
+                    var sCourse = $("<td>").text(student.course);
+                    var sGrade = $("<td>").text(student.grade);
+                    var id = student.id;
+                    var studentRow = $("<tr>").attr('id', id);
                     var toDelete = $("<button>", {
                         type: "button",
                         class: "btn btn-danger btn-xs",
-                        id: id,
+                        id: "delete",
                         text: "Delete",
                         on: {
-                            click: function () {
-                            }
+                            click: (function (studentRow) {
+                                return function () {
+                                    studentToDelete(studentRow);
+                                };
+                            })(studentRow)
                         }
                     });
+
+                    function studentToDelete(parentRow) {
+                        showDeleteModal(student);
+                        $("#deleteConfirmBtn").click(function () {
+                            getDataFromServer.splice(student, 1);
+                            deleteStudent(student, parentRow);
+                        })
+                    }
                     var deleteBtn = $("<td>").append(toDelete)
-                    var trStudent = $("<tr>").append(sName, sCourse, sGrade, deleteBtn);
-                    $(".student-list").append(trStudent);
+                    studentRow.append(sName, sCourse, sGrade, deleteBtn);
+                    $(".student-list").append(studentRow);
                 })();
             }
             calculateGradeAverage(getDataFromServer);
@@ -222,8 +252,6 @@ function addStudent() {
 }
 
 function updateArrayDel() {
-    $(".deleteText").text("Please confirm deletion");
-    $("#deleteStudentModal").modal('show');
     var btnClick = $(event.target).attr('id');
     console.log(btnClick + '');
     for (var i = 0; i < getDataFromServer.data.length; i++) {
