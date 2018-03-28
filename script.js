@@ -23,26 +23,8 @@ function addClickHandlersToElements() {
     $("#courseZA").click(sortNameOrCourse);
     $("#gradeLow").click(sortGrades);
     $("#gradeHigh").click(sortGrades);
-    // $("tbody").delegate(".btn-danger", "click", showDeleteModal);
+
 }
-
-function showDeleteModal() {
-    studentToDelete = $(this).parentsUntil('tbody').bind(this);
-    var info = $(this).parentsUntil('tbody').text();
-    console.log('info in show modal', info)
-    $(".deleteText").text(info);
-    $('#deleteStudentModal').modal('show');
-
-
-    return studentToDelete;
-}
-
-function deleteStudent(studentToDelete) {
-    console.log('called deleteStudent', studentToDelete)
-    updateArrayDel(getDataFromServer.data);
-    $(studentToDelete).remove();
-}
-
 
 function sortNameOrCourse() {
     var studentArray = getDataFromServer.data;
@@ -128,6 +110,7 @@ function renderStudentsOnSort(studentArray) {
                 text: "Delete",
                 on: {
                     click: (function (studentRow) {
+                        console.log('clicked')
                         return function () {
                             studentToDelete(studentRow);
                         };
@@ -138,6 +121,7 @@ function renderStudentsOnSort(studentArray) {
             function studentToDelete(parentRow) {
                 showDeleteModal(student);
                 $("#deleteConfirmBtn").click(function () {
+                    console.log('clicked')
                     getDataFromServer.data.splice(student, 1);
                     deleteStudent(student, parentRow);
                 })
@@ -184,13 +168,11 @@ function loadStudentData() {
             getDataFromServer = data;
             showLoadModal();
             updateStudentList();
-
         },
         error: function () {
             console.log('errors in ajax');
             $(".responseText").text("Error- Unable to access current student information");
             showLoadModal();
-
         }
     });
     $.ajax(dataObject);
@@ -232,20 +214,28 @@ function addStudent() {
     calculateGradeAverage(getDataFromServer);
 }
 
-function updateArrayDel() {
-    var btnClick = $(event.target).attr('id');
-    console.log(btnClick + '');
-    for (var i = 0; i < getDataFromServer.data.length; i++) {
-        if (getDataFromServer.data[i].id === btnClick) {
-            var idToDelete = getDataFromServer.data[i].id;
-            var indexToDelete = getDataFromServer.data.indexOf(getDataFromServer.data[i]);
-            getDataFromServer.data.splice(indexToDelete, 1);
-            break;
-        }
-    }
+function showDeleteModal(student) {
+    console.log("student in delete Modal", student)
+    // studentToDelete = $(this).parentsUntil('tbody').bind(this);
+
+    // console.log('studentToDelete in delete modal', studentToDelete)
+    $(".nameText").text("Name : " + student.name);
+    $(".courseText").text("Course : " + student.course);
+    $(".gradeText").text("Grade : " + student.grade);
+    $('#deleteStudentModal').modal('show');
+
+
+    // return studentToDelete;
+}
+
+function deleteStudent(studentToDelete) {
+    updateListOnDelete(studentToDelete);
+}
+
+function updateListOnDelete(studentToDelete) {
     var dataObject = {
         dataType: "json",
-        student_id: idToDelete,
+        student_id: studentToDelete.id,
         action: 'delete'
     };
     $.ajax({
@@ -262,6 +252,7 @@ function updateArrayDel() {
         }
     });
     $.ajax(dataObject);
+    updateStudentList()
     calculateGradeAverage(getDataFromServer);
     renderGradeAverage();
 }
