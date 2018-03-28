@@ -115,23 +115,36 @@ function renderStudentsOnSort(studentArray) {
     $('#studentDisplay').empty();
     for (var studentArrayIndex = 0; studentArrayIndex < studentArray.length; studentArrayIndex++) {
         (function () {
-            var sName = $("<td>").append(studentArray[studentArrayIndex].name);
-            var sCourse = $("<td>").append(studentArray[studentArrayIndex].course);
-            var sGrade = $("<td>").append(studentArray[studentArrayIndex].grade);
-            var id = studentArray[studentArrayIndex].id;
+            var student = studentArray[studentArrayIndex];
+            var sName = $("<td>").text(student.name);
+            var sCourse = $("<td>").text(student.course);
+            var sGrade = $("<td>").text(student.grade);
+            var id = student.id;
+            var studentRow = $("<tr>").attr('id', id);
             var toDelete = $("<button>", {
                 type: "button",
                 class: "btn btn-danger btn-xs",
-                id: id,
+                id: "delete",
                 text: "Delete",
                 on: {
-                    click: function () {
-                    }
+                    click: (function (studentRow) {
+                        return function () {
+                            studentToDelete(studentRow);
+                        };
+                    })(studentRow)
                 }
             });
+
+            function studentToDelete(parentRow) {
+                showDeleteModal(student);
+                $("#deleteConfirmBtn").click(function () {
+                    getDataFromServer.data.splice(student, 1);
+                    deleteStudent(student, parentRow);
+                })
+            }
             var deleteBtn = $("<td>").append(toDelete)
-            var trStudent = $("<tr>").append(sName, sCourse, sGrade, deleteBtn);
-            $(".student-list").append(trStudent);
+            studentRow.append(sName, sCourse, sGrade, deleteBtn);
+            $(".student-list").append(studentRow);
 
         })();
     }
@@ -170,46 +183,14 @@ function loadStudentData() {
         success: function (data) {
             getDataFromServer = data;
             showLoadModal();
-            for (var getDataFromServerIndex = 0; getDataFromServerIndex < getDataFromServer.data.length; getDataFromServerIndex++) {
-                (function () {
-                    var student = getDataFromServer.data[getDataFromServerIndex];
-                    var sName = $("<td>").text(student.name);
-                    var sCourse = $("<td>").text(student.course);
-                    var sGrade = $("<td>").text(student.grade);
-                    var id = student.id;
-                    var studentRow = $("<tr>").attr('id', id);
-                    var toDelete = $("<button>", {
-                        type: "button",
-                        class: "btn btn-danger btn-xs",
-                        id: "delete",
-                        text: "Delete",
-                        on: {
-                            click: (function (studentRow) {
-                                return function () {
-                                    studentToDelete(studentRow);
-                                };
-                            })(studentRow)
-                        }
-                    });
+            updateStudentList();
 
-                    function studentToDelete(parentRow) {
-                        showDeleteModal(student);
-                        $("#deleteConfirmBtn").click(function () {
-                            getDataFromServer.splice(student, 1);
-                            deleteStudent(student, parentRow);
-                        })
-                    }
-                    var deleteBtn = $("<td>").append(toDelete)
-                    studentRow.append(sName, sCourse, sGrade, deleteBtn);
-                    $(".student-list").append(studentRow);
-                })();
-            }
-            calculateGradeAverage(getDataFromServer);
         },
         error: function () {
             console.log('errors in ajax');
             $(".responseText").text("Error- Unable to access current student information");
-            $('#dataModal').modal('show');
+            showLoadModal();
+
         }
     });
     $.ajax(dataObject);
@@ -285,34 +266,53 @@ function updateArrayDel() {
     renderGradeAverage();
 }
 
+function updateStudentList() {
+    renderStudentsOnDom();
+}
+
 function clearAddStudentFormInputs() {
     $("#studentName").val("");
     $("#studentCourse").val("");
     $("#studentGrade").val("");
 }
 
-function renderStudentOnDom() {
-    var newStudent = getDataFromServer.data[getDataFromServer.data.length - 1];
-    var sName = $("<td>").append(newStudent.name);
-    var sCourse = $("<td>").append(newStudent.course);
-    var sGrade = $("<td>").append(newStudent.grade);
-    var toDelete = $("<button>", {
-        type: "button",
-        class: "btn btn-danger btn-xs",
-        id: id,
-        text: "Delete",
-        on: {
-            click: function () {
-            }
-        }
-    });
-    var deleteBtn = $("<td>").append(toDelete)
-    var trStudent = $("<tr>").append(sName, sCourse, sGrade, deleteBtn);
-    $(".student-list").append(trStudent);
-}
+function renderStudentsOnDom() {
+    $('#studentDisplay').empty();
+    for (var getDataFromServerIndex = 0; getDataFromServerIndex < getDataFromServer.data.length; getDataFromServerIndex++) {
+        (function () {
+            var student = getDataFromServer.data[getDataFromServerIndex];
+            var sName = $("<td>").text(student.name);
+            var sCourse = $("<td>").text(student.course);
+            var sGrade = $("<td>").text(student.grade);
+            var id = student.id;
+            var studentRow = $("<tr>").attr('id', id);
+            var toDelete = $("<button>", {
+                type: "button",
+                class: "btn btn-danger btn-xs",
+                id: "delete",
+                text: "Delete",
+                on: {
+                    click: (function (studentRow) {
+                        return function () {
+                            studentToDelete(studentRow);
+                        };
+                    })(studentRow)
+                }
+            });
 
-function updateStudentList() {
-    renderStudentOnDom();
+            function studentToDelete(parentRow) {
+                showDeleteModal(student);
+                $("#deleteConfirmBtn").click(function () {
+                    getDataFromServer.data.splice(student, 1);
+                    deleteStudent(student, parentRow);
+                })
+            }
+            var deleteBtn = $("<td>").append(toDelete)
+            studentRow.append(sName, sCourse, sGrade, deleteBtn);
+            $(".student-list").append(studentRow);
+        })();
+    }
+    calculateGradeAverage(getDataFromServer);
 }
 
 function calculateGradeAverage(array) {
