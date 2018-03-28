@@ -4,14 +4,11 @@ var total = 0;
 var average = 0;
 var getDataFromServer;
 var newStudentId;
-var studentToDelete;
+// var studentToDelete;
 
 function initializeApp() {
     addClickHandlersToElements();
     loadStudentData();
-    $('#messageDisplay').modal('hide');
-    $("#deleteStudentModal").modal('hide');
-
 }
 
 function addClickHandlersToElements() {
