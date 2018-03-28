@@ -1,68 +1,123 @@
 $(document).ready(initializeApp);
 
-// var student_array = [];
 var total = 0;
 var average = 0;
 var getDataFromServer;
 var newStudentId;
 
-/***********************
- * EXAMPLE FOR AN CHICK FUNCTION
- * student_array - global array to hold student objects
- * @type {Array}
- * example of student_array after input:
- * student_array = [
- *  { name: 'Jake', course: 'Math', grade: 85 },
- *  { name: 'Jill', course: 'Comp Sci', grade: 85 }
- * ];
- */
-/***************************************************************************************************
-* initializeApp 
-* @params {undefined} none
-* @returns: {undefined} none
-* initializes the application, including adding click handlers and pulling in any data from the server, in later versions
-*/
-
 function initializeApp() {
     addClickHandlersToElements();
     loadStudentData();
-    $('#dataModal').modal('hide');
-    //
-}
+    $('#messageDisplay').modal('hide');
+    $("#deleteStudentModal").modal('hide');
 
-/***************************************************************************************************
-* addClickHandlerstoElements
-* @params {undefined} 
-* @returns  {undefined}
-*     
-*/
+}
 
 function addClickHandlersToElements() {
     $("#addButton").click(handleAddClicked);
     $("#cancelButton").click(handleCancelClick);
+    $("#nameAZ").click(sortNamesAZ);
+    $("#nameZA").click(sortNamesZA);
+    $("#courseAZ").click(sortCourseAZ);
+    $("#courseZA").click(sortCourseZA);
+    $("#gradeLow").click(sortGradeLow);
+    $("#gradeHigh").click(sortGradeHigh);
     $("tbody").delegate(".btn-danger", "click", function () {
         updateArrayDel(getDataFromServer.data);
         $(this).parentsUntil('tbody').remove();
     });
 }
 
-/***************************************************************************************************
- * handleAddClicked - Event Handler when user clicks the add button
- * @param {object} event  The event object from the click
- * @return: 
-       none
- */
+function sortNamesAZ() {
+    var studentArray = getDataFromServer.data;
+    studentArray.sort(function (a, b) {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+    });
+    renderStudentsOnSort(studentArray)
+}
 
+function sortNamesZA() {
+    var studentArray = getDataFromServer.data;
+    studentArray.sort(function (a, b) {
+        if (a.name > b.name) return -1;
+        if (a.name < b.name) return 1;
+        return 0;
+    });
+    renderStudentsOnSort(studentArray)
+}
+
+function sortCourseAZ() {
+    var studentArray = getDataFromServer.data;
+    studentArray.sort(function (a, b) {
+        if (a.course < b.course) return -1;
+        if (a.course > b.course) return 1;
+        return 0;
+    });
+    renderStudentsOnSort(studentArray)
+}
+
+function sortCourseZA() {
+    var studentArray = getDataFromServer.data;
+    studentArray.sort(function (a, b) {
+        if (a.course > b.course) return -1;
+        if (a.course < b.course) return 1;
+        return 0;
+    });
+    renderStudentsOnSort(studentArray)
+}
+
+function sortGradeLow() {
+    var studentArray = getDataFromServer.data;
+    studentArray.sort(function (a, b) {
+
+        if (parseInt(a.grade) < parseInt(b.grade)) return -1;
+        if (parseInt(a.grade) > parseInt(b.grade)) return 1;
+        return 0;
+    });
+    renderStudentsOnSort(studentArray)
+
+}
+
+function sortGradeHigh() {
+    var studentArray = getDataFromServer.data;
+    studentArray.sort(function (a, b) {
+        if (parseInt(a.grade) > parseInt(b.grade)) return -1;
+        if (parseInt(a.grade) < parseInt(b.grade)) return 1;
+        return 0;
+    });
+    renderStudentsOnSort(studentArray)
+}
+
+function renderStudentsOnSort(studentArray) {
+    $('#studentDisplay').empty();
+
+    for (var studentArrayIndex = 0; studentArrayIndex < studentArray.length; studentArrayIndex++) {
+        (function () {
+            var sName = $("<td>").append(studentArray[studentArrayIndex].name);
+            var sCourse = $("<td>").append(studentArray[studentArrayIndex].course);
+            var sGrade = $("<td>").append(studentArray[studentArrayIndex].grade);
+            var id = studentArray[studentArrayIndex].id;
+            var deleteBtn = $("<button>", {
+                type: "button",
+                class: "btn btn-danger btn-xs",
+                id: id,
+                text: "Delete",
+                on: {
+                    click: function () {
+                    }
+                }
+            });
+            var trStudent = $("<tr>").append(sName, sCourse, sGrade, deleteBtn);
+            $(".student-list").append(trStudent);
+
+        })();
+    }
+}
 function handleAddClicked() {
     addStudent();
 }
-
-/***************************************************************************************************
- * handleCancelClicked - Event Handler when user clicks the cancel button, should clear out student form
- * @param: {undefined} none
- * @returns: {undefined} none
- * @calls: clearAddStudentFormInputs
- */
 
 function handleCancelClick() {
     $("#studentName").val("");
@@ -70,12 +125,50 @@ function handleCancelClick() {
     $("#studentGrade").val("");
 }
 
-/***************************************************************************************************
- * addStudent - creates a student objects based on input fields in the form and adds the object to global student array
- * @param {undefined} none
- * @return undefined
- * @calls clearAddStudentFormInputs, updateStudentList
- */
+function loadStudentData() {
+    var dataObject = {
+        dataType: "json",
+        action: 'read'
+    };
+    $.ajax({
+        data: dataObject,
+        dataType: "json",
+        method: "get",
+        url: 'php/actions/datapoint.php',
+        success: function (data) {
+            getDataFromServer = data;
+            $(".responseText").text("Current student information has been loaded from DataBabe");
+            $('#messageDisplay').modal('show');
+            for (var getDataFromServerIndex = 0; getDataFromServerIndex < getDataFromServer.data.length; getDataFromServerIndex++) {
+                (function () {
+                    var sName = $("<td>").append(getDataFromServer.data[getDataFromServerIndex].name);
+                    var sCourse = $("<td>").append(getDataFromServer.data[getDataFromServerIndex].course);
+                    var sGrade = $("<td>").append(getDataFromServer.data[getDataFromServerIndex].grade);
+                    var id = getDataFromServer.data[getDataFromServerIndex].id;
+                    var deleteBtn = $("<button>", {
+                        type: "button",
+                        class: "btn btn-danger btn-xs",
+                        id: id,
+                        text: "Delete",
+                        on: {
+                            click: function () {
+                            }
+                        }
+                    });
+                    var trStudent = $("<tr>").append(sName, sCourse, sGrade, deleteBtn);
+                    $(".student-list").append(trStudent);
+                })();
+            }
+            calculateGradeAverage(getDataFromServer);
+        },
+        error: function () {
+            console.log('errors in ajax');
+            $(".responseText").text("Error- Unable to access current student information");
+            $('#dataModal').modal('show');
+        }
+    });
+    $.ajax(dataObject);
+}
 
 function addStudent() {
     console.log("local data in add", getDataFromServer)
@@ -111,74 +204,11 @@ function addStudent() {
     });
     $.ajax(dataObject);
     calculateGradeAverage(getDataFromServer);
-
-}
-
-/***************************************************************************************************
- * clearAddStudentForm - clears out the form values based on inputIds variable
- */
-function clearAddStudentFormInputs() {
-    $("#studentName").val("");
-    $("#studentCourse").val("");
-    $("#studentGrade").val("");
-
-}
-/***************************************************************************************************
- * renderStudentOnDom - take in a student object, create html elements from the values and then append the elements
- * into the .student_list tbody
- * @param {object} studentObj a single student object with course, name, and grade inside
- */
-
-function renderStudentOnDom() {
-    var newStudent = getDataFromServer.data[getDataFromServer.data.length - 1];
-    var sName = $("<td>").append(newStudent.name);
-    var sCourse = $("<td>").append(newStudent.course);
-    var sGrade = $("<td>").append(newStudent.grade);
-    var trStudent = $("<tr>").append(sName, sCourse, sGrade);
-    var deleteBtn = $("<button>", {
-        type: "button",
-        class: "btn btn-danger btn-xs",
-        text: "Delete",
-        id: newStudentId
-    });
-    trStudent = $("<tr>").append(sName, sCourse, sGrade, deleteBtn);
-    $(".student-list").append(trStudent);
-}
-
-/***************************************************************************************************
- * updateStudentList - centralized function to update the average and call student list update
- * @param students {array} the array of student objects
- * @returns {undefined} none
- * @calls renderStudentOnDom, calculateGradeAverage, renderGradeAverage
- */
-function updateStudentList() {
-    renderStudentOnDom();
-    // calculateGradeAverage(student_array);
-    // renderGradeAverage();
-}
-/***************************************************************************************************
- * calculateGradeAverage - loop through the global student array and calculate average grade and return that value
- * @param: {array} students  the array of student objects
- * @returns {number}
- */
-function calculateGradeAverage(array) {
-    total = 0;
-    for (var i = 0; i < array.data.length; i++) {
-        total += parseFloat(array.data[i].grade);
-        average = Math.round(total / array.data.length);
-    }
-    renderGradeAverage();
-}
-/***************************************************************************************************
- * renderGradeAverage - updates the on-page grade average
- * @param: {number} average    the grade average
- * @returns {undefined} none
- */
-function renderGradeAverage() {
-    $(".avgGrade").text(average);
 }
 
 function updateArrayDel() {
+    $(".deleteText").text("Please confirm deletion");
+    $("#deleteStudentModal").modal('show');
     var btnClick = $(event.target).attr('id');
     console.log(btnClick + '');
     for (var i = 0; i < getDataFromServer.data.length; i++) {
@@ -212,49 +242,46 @@ function updateArrayDel() {
     renderGradeAverage();
 }
 
-function loadStudentData() {
-    var dataObject = {
-        dataType: "json",
-        action: 'read'
-    };
-    $.ajax({
-        data: dataObject,
-        dataType: "json",
-        method: "get",
-        url: 'php/actions/datapoint.php',
-        success: function (data) {
-
-            getDataFromServer = data;
-            $(".responseText").text("current student data has been loaded successfully");
-            $('#dataModal').modal('show');
-            for (var getDataFromServerIndex = 0; getDataFromServerIndex < getDataFromServer.data.length; getDataFromServerIndex++) {
-                (function () {
-                    var sName = $("<td>").append(getDataFromServer.data[getDataFromServerIndex].name);
-                    var sCourse = $("<td>").append(getDataFromServer.data[getDataFromServerIndex].course);
-                    var sGrade = $("<td>").append(getDataFromServer.data[getDataFromServerIndex].grade);
-                    var id = getDataFromServer.data[getDataFromServerIndex].id;
-                    var deleteBtn = $("<button>", {
-                        type: "button",
-                        class: "btn btn-danger btn-xs",
-                        id: id,
-                        text: "Delete",
-                        on: {
-                            click: function () {
-                            }
-                        }
-                    });
-                    var trStudent = $("<tr>").append(sName, sCourse, sGrade, deleteBtn);
-                    $(".student-list").append(trStudent);
-                })();
-            }
-            calculateGradeAverage(getDataFromServer);
-        },
-        error: function () {
-            console.log('errors in ajax');
-            $(".responseText").text("Error- Unable to access current student information");
-            $('#dataModal').modal('show');
-
-        }
-    });
-    $.ajax(dataObject);
+function clearAddStudentFormInputs() {
+    $("#studentName").val("");
+    $("#studentCourse").val("");
+    $("#studentGrade").val("");
 }
+
+function renderStudentOnDom() {
+    var newStudent = getDataFromServer.data[getDataFromServer.data.length - 1];
+    var sName = $("<td>").append(newStudent.name);
+    var sCourse = $("<td>").append(newStudent.course);
+    var sGrade = $("<td>").append(newStudent.grade);
+    var trStudent = $("<tr>").append(sName, sCourse, sGrade);
+    var deleteBtn = $("<button>", {
+        type: "button",
+        class: "btn btn-danger btn-xs",
+        text: "Delete",
+        id: newStudentId
+    });
+    trStudent = $("<tr>").append(sName, sCourse, sGrade, deleteBtn);
+    $(".student-list").append(trStudent);
+}
+
+function updateStudentList() {
+    renderStudentOnDom();
+    // calculateGradeAverage(student_array);
+    // renderGradeAverage();
+}
+
+function calculateGradeAverage(array) {
+    total = 0;
+    for (var i = 0; i < array.data.length; i++) {
+        total += parseFloat(array.data[i].grade);
+        average = Math.round(total / array.data.length);
+    }
+    renderGradeAverage();
+}
+
+function renderGradeAverage() {
+    $(".avgGrade").text(average);
+}
+
+
+

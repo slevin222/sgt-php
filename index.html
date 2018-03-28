@@ -43,7 +43,7 @@
                 <h4>
                     <strong>Add Student</strong>
                 </h4>
-                <form class="form-group">
+                <form class="form-group needs-validation">
                     <div class="input-group">
                         <span class="input-group-addon">
                             <i class="glyphicon glyphicon-user" style="color: darkblue"></i>
@@ -88,8 +88,8 @@
                                         <span class="caret"></span>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                        <button class="dropdown-item studentAZ btn btn-info " type="button">Sort A - Z</button>
-                                        <button class="dropdown-item studentZA btn btn-info " type="button">Sort Z - A</button>
+                                        <button class="dropdown-item studentAZ btn btn-info " type="button" id="nameAZ">Sort A - Z</button>
+                                        <button class="dropdown-item studentZA btn btn-info " type="button" id="nameZA">Sort Z - A</button>
                                     </div>
                                 </div>
                             </th>
@@ -101,8 +101,8 @@
                                         <span class="caret"></span>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                        <button class="dropdown-item courseAZ btn btn-info" type="button">Sort A - Z</button>
-                                        <button class="dropdown-item courseZA btn btn-info" type="button">Sort Z - A</button>
+                                        <button class="dropdown-item courseAZ btn btn-info" type="button" id="courseAZ">Sort A - Z</button>
+                                        <button class="dropdown-item courseZA btn btn-info" type="button" id="courseZA">Sort Z - A</button>
                                     </div>
                                 </div>
                             </th>
@@ -114,8 +114,8 @@
                                         <span class="caret"></span>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                        <button class="dropdown-item gradeAZ btn btn-info" type="button">Sort 0 - 100</button>
-                                        <button class="dropdown-item gradeZA btn btn-info" type="button">Sort 100 - 0</button>
+                                        <button class="dropdown-item gradeAZ btn btn-info" type="button" id="gradeLow">Sort 0 - 100</button>
+                                        <button class="dropdown-item gradeZA btn btn-info" type="button" id="gradeHigh">Sort 100 - 0</button>
                                     </div>
                                 </div>
                             </th>
@@ -130,7 +130,7 @@
     <div id="messageDisplay" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header alert alert-danger">
+                <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"></button>
                 </div>
                 <div class="modal-body text-center">
@@ -146,10 +146,10 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="close" data-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="responseText"></p>
+                    <p class="deleteText"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" id="deleteConfirmBtn" data-dismiss="modal">Close</button>
