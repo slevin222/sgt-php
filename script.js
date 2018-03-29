@@ -4,7 +4,6 @@ var total = 0;
 var average = 0;
 var getDataFromServer;
 var newStudentId;
-// var studentToDelete;
 
 function initializeApp() {
     addClickHandlersToElements();
@@ -106,10 +105,9 @@ function renderStudentsOnSort(studentArray) {
                 id: "delete",
                 text: "Delete",
                 on: {
-                    click: (function (studentRow) {
-                        console.log('clicked')
+                    click: (function (newRow) {
                         return function () {
-                            studentToDelete(studentRow);
+                            studentToDelete(newRow);
                         };
                     })(studentRow)
                 }
@@ -118,7 +116,6 @@ function renderStudentsOnSort(studentArray) {
             function studentToDelete(parentRow) {
                 showDeleteModal(student);
                 $("#deleteConfirmBtn").click(function () {
-                    console.log('clicked')
                     getDataFromServer.data.splice(student, 1);
                     deleteStudent(student, parentRow);
                 })
@@ -132,7 +129,26 @@ function renderStudentsOnSort(studentArray) {
 }
 
 function handleAddClicked() {
-    addStudent();
+    var name = $("#studentName").val();
+    var course = $("#studentCourse").val();
+    var grade = $("#studentGrade").val();
+    if (typeof name !== 'string' || name.length < 2 || !isNaN(name)) {
+        $(".errorText").text('Name must be specified');
+        $("#errorDisplay").modal('show');
+        return;
+    }
+    if (typeof course !== 'string' || course.length < 2 || !isNaN(course)) {
+        $(".errorText").text('Course must be specified');
+        $("#errorDisplay").modal('show');
+        return;
+    }
+    if (isNaN(grade) || grade < 0 || grade > 100 || grade.length < 1) {
+        $(".errorText").text('Grade must be a number between 0 - 100');
+        $("#errorDisplay").modal('show');
+        return;
+    }
+
+    addStudent(name, course, grade);
 }
 
 function handleCancelClick() {
@@ -167,7 +183,7 @@ function loadStudentData() {
             updateStudentList();
         },
         error: function () {
-            console.log('errors in ajax');
+            console.log('error lodaing student data');
             $(".responseText").text("Error- Unable to access current student information");
             showLoadModal();
         }
@@ -175,13 +191,8 @@ function loadStudentData() {
     $.ajax(dataObject);
 }
 
-function addStudent() {
-    console.log("local data in add", getDataFromServer)
-    var studentName = $("#studentName").val();
-    var studentCourse = $("#studentCourse").val();
-    var studentGrade = $("#studentGrade").val();
+function addStudent(studentName, studentCourse, studentGrade) {
     var studentObj = { name: studentName, course: studentCourse, grade: studentGrade };
-    console.log('student object', studentObj)
     getDataFromServer.data.push(studentObj);
     clearAddStudentFormInputs();
 
@@ -204,7 +215,7 @@ function addStudent() {
             updateStudentList();
         },
         error: function () {
-            console.log("error from addStudent");
+            console.log("error adding student");
         }
     });
     $.ajax(dataObject);
@@ -212,20 +223,14 @@ function addStudent() {
 }
 
 function showDeleteModal(student) {
-    console.log("student in delete Modal", student)
-    // studentToDelete = $(this).parentsUntil('tbody').bind(this);
-
-    // console.log('studentToDelete in delete modal', studentToDelete)
     $(".nameText").text("Name : " + student.name);
     $(".courseText").text("Course : " + student.course);
     $(".gradeText").text("Grade : " + student.grade);
     $('#deleteStudentModal').modal('show');
-
-
-    // return studentToDelete;
 }
 
-function deleteStudent(studentToDelete) {
+function deleteStudent(studentToDelete, parentRow) {
+    parentRow.remove();
     updateListOnDelete(studentToDelete);
 }
 
@@ -241,15 +246,14 @@ function updateListOnDelete(studentToDelete) {
         method: "post",
         url: 'php/actions/datapoint.php',
         success: function (response) {
-
-            console.log(response);
+            console.log('delete response ', response);
         },
         error: function () {
             console.log("delete response error");
         }
     });
     $.ajax(dataObject);
-    updateStudentList()
+
     calculateGradeAverage(getDataFromServer);
     renderGradeAverage();
 }
@@ -280,9 +284,9 @@ function renderStudentsOnDom() {
                 id: "delete",
                 text: "Delete",
                 on: {
-                    click: (function (studentRow) {
+                    click: (function (newRow) {
                         return function () {
-                            studentToDelete(studentRow);
+                            studentToDelete(newRow);
                         };
                     })(studentRow)
                 }
