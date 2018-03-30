@@ -12,7 +12,7 @@ li{
 }
 
 li:hover { 
-    background-color: lightgray;
+    background-color:#70787d
 }
 
 ul.dropdown-menu{
@@ -21,6 +21,26 @@ ul.dropdown-menu{
 .modal-footer{
     text-align: center;
 }
+.glyphicon{
+
+   color: linear-gradient(#8a9196, #7a8288 60%, #70787d);
+}
+
+.student-list{
+    justify-content:center;
+}
+
+@media only screen and (min-width: 0px) and (max-width: 374px) {
+    .container{
+        margin: 0;
+        padding:0;
+        width: 100%;
+    }
+    .student-add-form{
+        padding-right: 0;
+    }
+}
+
 
 
 
