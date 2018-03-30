@@ -41,7 +41,7 @@ function showLoadModal() {
 function handleAddClicked() {
     var name = $("#studentName").val();
     var course = $("#studentCourse").val();
-    var grade = Math.round($("#studentGrade").val());
+    var grade = $("#studentGrade").val();
     if (typeof name !== 'string' || name.length < 2 || !isNaN(name)) {
         $(".errorText").text('Name must be specified');
         $("#errorDisplay").modal('show');
@@ -57,6 +57,7 @@ function handleAddClicked() {
         $("#errorDisplay").modal('show');
         return;
     }
+    grade = Math.round(grade);
     addStudent(name, course, grade);
 }
 

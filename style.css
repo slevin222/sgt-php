@@ -16,7 +16,7 @@ li:hover {
 }
 
 ul.dropdown-menu{
-    min-width: 75px;
+    min-width: 90px;
 }
 .modal-footer{
     text-align: center;
@@ -26,9 +26,6 @@ ul.dropdown-menu{
    color: linear-gradient(#8a9196, #7a8288 60%, #70787d);
 }
 
-.student-list{
-    justify-content:center;
-}
 
 @media only screen and (min-width: 0px) and (max-width: 374px) {
     .container{
