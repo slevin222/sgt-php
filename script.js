@@ -4,11 +4,11 @@ var studentArray;
 
 
 function initializeApp() {
-    addClickHandlersToElements();
+    addEventHandlersToElements();
     loadStudentData();
 }
 
-function addClickHandlersToElements() {
+function addEventHandlersToElements() {
     $("#addButton").click(handleAddClicked);
     $("#cancelButton").click(handleCancelClick);
     $("#nameAZ").click(sortNameOrCourse);
@@ -17,6 +17,12 @@ function addClickHandlersToElements() {
     $("#courseZA").click(sortNameOrCourse);
     $("#gradeLow").click(sortGrades);
     $("#gradeHigh").click(sortGrades);
+    $('input').keydown(() => {
+        if (event.which === 13) {
+            event.preventDefault();
+            handleAddClicked();
+        }
+    });
 }
 
 function handleCancelClick() {
@@ -125,7 +131,7 @@ function renderStudentsOnDom(studentArray) {
 
 function addStudent(studentName, studentCourse, studentGrade) {
     var studentObj = { name: studentName, course: studentCourse, grade: studentGrade };
-    studentArray.push(studentObj);
+    studentArray.unshift(studentObj);
     clearAddStudentFormInputs();
 
     var dataObject = {
@@ -178,11 +184,12 @@ function updateStudentArrayOnDelete(studentToDelete) {
             var idToDelete = studentArray[i].id;
             var indexToDelete = studentArray.indexOf(studentArray[i]);
             studentArray.splice(indexToDelete, 1);
+            calculateGradeAverage(studentArray);
             return studentArray;
         }
     }
     console.log('student array after splice delete ', studentArray);
-    calculateGradeAverage(studentArray);
+
 }
 
 function updateListOnDelete(studentToDelete, parentRow) {
@@ -209,7 +216,6 @@ function updateListOnDelete(studentToDelete, parentRow) {
 }
 
 function sortNameOrCourse() {
-    // var studentArray = studentArray.slice();
     var sortMode = $(this).attr('id');
     switch (sortMode) {
         case "nameAZ":
@@ -257,7 +263,6 @@ function sortNameOrCourse() {
 
 function sortGrades() {
     var sortMode = $(this).attr('id');
-    // var studentArray = mainStudentArray.slice();
     switch (sortMode) {
         case "gradeLow":
             studentArray.sort(function (a, b) {
@@ -278,11 +283,11 @@ function sortGrades() {
     }
 }
 
-function calculateGradeAverage(array) {
+function calculateGradeAverage(studentArray) {
     var total = 0;
-    for (var i = 0; i < array.length; i++) {
-        total += parseFloat(array[i].grade);
-        var average = Math.round(total / array.length);
+    for (var i = 0; i < studentArray.length; i++) {
+        total += parseFloat(studentArray[i].grade);
+        var average = Math.round(total / studentArray.length);
     }
     renderGradeAverage(average);
 }
