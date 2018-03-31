@@ -12,15 +12,32 @@ li{
 }
 
 li:hover { 
-    background-color: lightgray;
+    background-color:#70787d
 }
 
 ul.dropdown-menu{
-    min-width: 75px;
+    min-width: 90px;
 }
 .modal-footer{
     text-align: center;
 }
+.glyphicon{
+
+   color: linear-gradient(#8a9196, #7a8288 60%, #70787d);
+}
+
+
+@media only screen and (min-width: 0px) and (max-width: 374px) {
+    .container{
+        margin: 0;
+        padding:0;
+        width: 98%;
+    }
+    .student-add-form{
+        padding-right: 0;
+    }
+}
+
 
 
 

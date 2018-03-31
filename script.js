@@ -1,8 +1,6 @@
 $(document).ready(initializeApp);
 
-// var total = 0;
-// var average = 0;
-var mainStudentArray;
+var studentArray;
 
 
 function initializeApp() {
@@ -41,7 +39,7 @@ function showLoadModal() {
 function handleAddClicked() {
     var name = $("#studentName").val();
     var course = $("#studentCourse").val();
-    var grade = Math.round($("#studentGrade").val());
+    var grade = $("#studentGrade").val();
     if (typeof name !== 'string' || name.length < 2 || !isNaN(name)) {
         $(".errorText").text('Name must be specified');
         $("#errorDisplay").modal('show');
@@ -57,6 +55,7 @@ function handleAddClicked() {
         $("#errorDisplay").modal('show');
         return;
     }
+    grade = Math.round(grade);
     addStudent(name, course, grade);
 }
 
@@ -71,12 +70,11 @@ function loadStudentData() {
         method: "get",
         url: 'php/actions/datapoint.php',
         success: function (data) {
-            mainStudentArray = data.data;
+            studentArray = data.data;
             showLoadModal();
-            updateStudentList(mainStudentArray);
+            updateStudentList(studentArray);
         },
         error: function () {
-            console.log('error lodaing student data');
             $(".responseText").text("Error- Unable to access current student information");
             showLoadModal();
         }
@@ -85,11 +83,12 @@ function loadStudentData() {
 }
 
 function renderStudentsOnDom(studentArray) {
+    console.log(studentArray)
     $('#studentDisplay').empty();
     for (var studentArrayIndex = 0; studentArrayIndex < studentArray.length; studentArrayIndex++) {
         (function () {
             var student = studentArray[studentArrayIndex];
-            var deleteIndex = studentArray.indexOf(studentArray[studentArrayIndex])
+            // var deleteIndex = studentArray.indexOf(studentArray[studentArrayIndex])
             var sName = $("<td>").text(student.name);
             var sCourse = $("<td>").text(student.course);
             var sGrade = $("<td>").text(student.grade);
@@ -111,7 +110,7 @@ function renderStudentsOnDom(studentArray) {
             function studentToDelete(parentRow) {
                 showDeleteModal(student);
                 $("#deleteConfirmBtn").one("click", function () {
-                    mainStudentArray.splice(deleteIndex, 1);
+                    // mainStudentArray.splice(deleteIndex, 1);
                     deleteStudent(student, parentRow);
 
                 })
@@ -121,12 +120,12 @@ function renderStudentsOnDom(studentArray) {
             $(".student-list").append(studentRow);
         })();
     }
-    calculateGradeAverage(mainStudentArray);
+    calculateGradeAverage(studentArray);
 }
 
 function addStudent(studentName, studentCourse, studentGrade) {
     var studentObj = { name: studentName, course: studentCourse, grade: studentGrade };
-    mainStudentArray.push(studentObj);
+    studentArray.push(studentObj);
     clearAddStudentFormInputs();
 
     var dataObject = {
@@ -144,9 +143,9 @@ function addStudent(studentName, studentCourse, studentGrade) {
         success: function (response) {
             console.log("server response from add student", response);
             var newStudentId = (response.id + '');
-            mainStudentArray[mainStudentArray.length - 1].id = newStudentId;
-            updateStudentList();
-            calculateGradeAverage(mainStudentArray);
+            studentArray[studentArray.length - 1].id = newStudentId;
+            updateStudentList(studentArray);
+            calculateGradeAverage(studentArray);
         },
         error: function () {
             console.log("error adding student");
@@ -156,8 +155,8 @@ function addStudent(studentName, studentCourse, studentGrade) {
 
 }
 
-function updateStudentList() {
-    renderStudentsOnDom(mainStudentArray);
+function updateStudentList(studentArray) {
+    renderStudentsOnDom(studentArray);
 }
 
 function showDeleteModal(student) {
@@ -169,6 +168,21 @@ function showDeleteModal(student) {
 
 function deleteStudent(studentToDelete, parentRow) {
     updateListOnDelete(studentToDelete, parentRow);
+
+}
+
+function updateStudentArrayOnDelete(studentToDelete) {
+    console.log('in update student array on delete and array ', studentToDelete, studentArray);
+    for (var i = 0; i < studentArray.length; i++) {
+        if (studentArray[i].id === studentToDelete.id) {
+            var idToDelete = studentArray[i].id;
+            var indexToDelete = studentArray.indexOf(studentArray[i]);
+            studentArray.splice(indexToDelete, 1);
+            return studentArray;
+        }
+    }
+    console.log('student array after splice delete ', studentArray);
+    calculateGradeAverage(studentArray);
 }
 
 function updateListOnDelete(studentToDelete, parentRow) {
@@ -177,16 +191,14 @@ function updateListOnDelete(studentToDelete, parentRow) {
         student_id: studentToDelete.id,
         action: 'delete'
     };
-    console.log(" studentTodelete, parentRow, dataObject : ", studentToDelete, parentRow, dataObject)
+
     $.ajax({
         data: dataObject,
         dataType: "json",
         method: "post",
         url: 'php/actions/datapoint.php',
         success: function (response) {
-            console.log('delete response ', response);
-            console.log(" student array in delete confirmation", mainStudentArray)
-            calculateGradeAverage(mainStudentArray);
+            updateStudentArrayOnDelete(studentToDelete);
             parentRow.remove();
         },
         error: function () {
@@ -197,7 +209,7 @@ function updateListOnDelete(studentToDelete, parentRow) {
 }
 
 function sortNameOrCourse() {
-    var studentArray = mainStudentArray.slice();
+    // var studentArray = studentArray.slice();
     var sortMode = $(this).attr('id');
     switch (sortMode) {
         case "nameAZ":
@@ -245,7 +257,7 @@ function sortNameOrCourse() {
 
 function sortGrades() {
     var sortMode = $(this).attr('id');
-    var studentArray = mainStudentArray.slice();
+    // var studentArray = mainStudentArray.slice();
     switch (sortMode) {
         case "gradeLow":
             studentArray.sort(function (a, b) {
