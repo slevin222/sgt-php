@@ -1,23 +1,23 @@
 
-#Student Grade Table
->SGT is a content management system demo created with CRUD functinality to Create, Read, Update and Delete a live mySql DataBase.
+Student Grade Table
+SGT is a content management system demo created with CRUD functinality to Create, Read, Update and Delete a live mySql DataBase.
 
-##Live Link <a href="http://sgt.shawndlevin.com>.
 
-##Technologies Used
 
->JavaScript
->jQuery
->AJAX
->MySQL
->PHP
->HTML5
->CSS
->Bootstrap
+Technologies Used
 
-##Tools Used
+JavaScript, 
+jQuery, 
+AJAX, 
+MySQL, 
+PHP, 
+HTML5, 
+CSS, 
+Bootstrap, 
 
->Git
->GitHub
->JSDoc
->MeisterTask
+Tools Used
+
+Git, 
+GitHub, 
+JSDoc, 
+MeisterTask, 
