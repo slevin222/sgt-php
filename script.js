@@ -149,7 +149,7 @@ function addStudent(studentName, studentCourse, studentGrade) {
         success: function (response) {
             console.log("server response from add student", response);
             var newStudentId = (response.id + '');
-            studentArray[studentArray.length - 1].id = newStudentId;
+            studentArray[0].id = newStudentId;
             updateStudentList(studentArray);
             calculateGradeAverage(studentArray);
         },
